@@ -18,7 +18,12 @@
 
 
 char textbuffer[4][16];
-uint8_t screen[4][128]; // Själva bilden
+uint8_t screen[512]; // Själva bilden, ett tal är 8-bitar, alltså 8 rader vertikalt, sen blir 
+					 // index 0 - 127 
+					 // Samma sak som [0,0] till [7,127], 
+					 // index 128-255 blir samma som [8,0] - [15, 127], 
+					 // index 256 - 383 blir [16, 0] - [23, 127]
+					 // index 384 - 511 blir [24, 0] - [31, 127]
 
 
 static const uint8_t const font[] = {
@@ -202,8 +207,8 @@ void display_image(int x, const uint8_t *data) {
 void display_update() {
 	int i, j, k;
 	int c;
-	for(i = 0; i < 4; i++) { // "Fyra" rader, ett tal per rad, med varje rad innehåller ett 8-bitars tal
-							 // Alltså täcker en iteration 8 rader på displayenS
+	for(i = 0; i < 2; i++) { // "Fyra" rader, ett tal per rad, med varje rad innehåller ett 8-bitars tal
+							 // Alltså täcker en iteration 8 rader på displayen
 		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK; //Command mode
 		spi_send_recv(0x22);
 		spi_send_recv(i);
@@ -214,13 +219,58 @@ void display_update() {
 		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK; // Display mode
 		
 			
-		for(k = 0; k < 128; k++)
-			spi_send_recv(0xFF);
-	
+		for(k = 0; k < 64; k++) // Förskjutning i x-led
+			spi_send_recv(0x1); // Bestämmer värdet i varje tal
 	}
 }
 
-void display_clear(){
+void display_white(){ //Gör allt vitt
+	int i, j;
+	
+	for(i = 0; i < 4; i ++){
+		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK; //Command mode
+		spi_send_recv(0x22);
+		spi_send_recv(i);
+		
+		spi_send_recv(0x0);
+		spi_send_recv(0x10); // Offset
+
+		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK; // Display mode
+
+		for( j = 0; j < 128; j ++){
+			spi_send_recv(0xFF);
+		}
+
+	}
+
+}
+
+void set_pixel(int x, int y, int value){
+	
+	// First we need to find the right index group
+	int ytemp = y/8; 
+	int index = ytemp *128;
+	index += x;
+	// If 0 <= y >= 7 --> ytemp =  0 --> index = 0 * 128 + x = x (0 <= index >= 127) group 1
+	// If 8 <= y >= 15 --> ytemp = 1 --> index = 1 * 128 + x = 128 + x (128 <= index >= 255) group 2
+	// If 16 <= y >= 23 --> ytemp = 2 --> index = 2 * 128 + x = 256 + x (256 <= index >= 383) group 3
+	// If 24 <= y >= 31 --> ytemp = 3 --> index = 3 * 128 + x = 384 + x (384 <= index >= 255) group 4
+
+	//We now have the right main index group
+	//Now we need to find the right index for the subgroup
+	int ytemp2 = y % 8;
+	value = value << ytemp2;
+	if(!value){ // If we want to turn off
+		int shift = 1;
+		shift = shift << ytemp2;
+		screen[index] &= !shift;
+	}else{
+	screen[index] |= value;
+	}
+
+}
+
+void display_clear(){ // Gör allt svart
 	int i, j, k;
 	int c;
 	for(i = 0; i < 4; i++) {
@@ -240,6 +290,12 @@ void display_clear(){
 	}
 }
 
+void screen_reset(){
+	int i = 0;
+	for(i= 0; i < 512; i ++){
+		screen[i] = 0;
+	}
+}
 
 int main(void) {
 	
@@ -284,7 +340,12 @@ int main(void) {
 	//display_string(3, "wow");
 	//setWhite(screen, 4, 128);
 	display_clear();
-	display_update();
+	//set_pixel(31,127, 1);
+	//display_image(0, screen);
+	screen_reset();
+	display_image(100, screen);
+	//display_white();
+	//display_update();
 	//display_image(96, icon);
 	
 	for(;;) ;
