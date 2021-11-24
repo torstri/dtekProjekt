@@ -18,6 +18,8 @@
 
 
 char textbuffer[4][16];
+uint8_t screen[4][128]; // Själva bilden
+
 
 static const uint8_t const font[] = {
 	0, 0, 0, 0, 0, 0, 0, 0,
@@ -150,24 +152,7 @@ static const uint8_t const font[] = {
 	0, 120, 68, 66, 68, 120, 0, 0,
 };
 
-const uint8_t const icon[] = {
-	255, 255, 255, 255, 255, 255, 127, 187,
-	68, 95, 170, 93, 163, 215, 175, 95,
-	175, 95, 175, 95, 223, 111, 175, 247,
-	59, 237, 242, 254, 171, 254, 1, 255,
-	255, 255, 15, 211, 109, 58, 253, 8,
-	178, 77, 58, 199, 122, 197, 242, 173,
-	242, 237, 186, 215, 40, 215, 41, 214,
-	35, 175, 91, 212, 63, 234, 149, 111,
-	171, 84, 253, 252, 254, 253, 126, 184,
-	195, 52, 201, 22, 225, 27, 196, 19,
-	165, 74, 36, 146, 72, 162, 85, 8,
-	226, 25, 166, 80, 167, 216, 167, 88,
-	106, 149, 161, 95, 135, 91, 175, 87,
-	142, 123, 134, 127, 134, 121, 134, 121,
-	132, 59, 192, 27, 164, 74, 177, 70,
-	184, 69, 186, 69, 254, 80, 175, 217,
-};
+
 
 void delay(int cyc) {
 	int i;
@@ -179,36 +164,6 @@ uint8_t spi_send_recv(uint8_t data) {
 	SPI2BUF = data;
 	while(!(SPI2STAT & 0x01));
 	return SPI2BUF;
-}
-
-void display_init() {
-	DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
-	delay(10);
-	DISPLAY_VDD_PORT &= ~DISPLAY_VDD_MASK;
-	delay(1000000);
-	
-	spi_send_recv(0xAE);
-	DISPLAY_RESET_PORT &= ~DISPLAY_RESET_MASK;
-	delay(10);
-	DISPLAY_RESET_PORT |= DISPLAY_RESET_MASK;
-	delay(10);
-	
-	spi_send_recv(0x8D);
-	spi_send_recv(0x14);
-	
-	spi_send_recv(0xD9);
-	spi_send_recv(0xF1);
-	
-	DISPLAY_VBATT_PORT &= ~DISPLAY_VBATT_MASK;
-	delay(10000000);
-	
-	spi_send_recv(0xA1);
-	spi_send_recv(0xC8);
-	
-	spi_send_recv(0xDA);
-	spi_send_recv(0x20);
-	
-	spi_send_recv(0xAF);
 }
 
 void display_string(int line, char *s) {
@@ -247,28 +202,47 @@ void display_image(int x, const uint8_t *data) {
 void display_update() {
 	int i, j, k;
 	int c;
-	for(i = 0; i < 4; i++) {
-		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
+	for(i = 0; i < 4; i++) { // "Fyra" rader, ett tal per rad, med varje rad innehåller ett 8-bitars tal
+							 // Alltså täcker en iteration 8 rader på displayenS
+		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK; //Command mode
 		spi_send_recv(0x22);
 		spi_send_recv(i);
 		
 		spi_send_recv(0x0);
-		spi_send_recv(0x10);
+		spi_send_recv(0x10); // Offset
 		
-		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK;
+		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK; // Display mode
 		
-		for(j = 0; j < 16; j++) {
-			c = textbuffer[i][j];
-			if(c & 0x80)
-				continue;
 			
-			for(k = 0; k < 8; k++)
-				spi_send_recv(font[c*8 + k]);
-		}
+		for(k = 0; k < 128; k++)
+			spi_send_recv(0xFF);
+	
 	}
 }
 
+void display_clear(){
+	int i, j, k;
+	int c;
+	for(i = 0; i < 4; i++) {
+		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK; //Command mode
+		spi_send_recv(0x22);
+		spi_send_recv(i);
+		
+		spi_send_recv(0x0);
+		spi_send_recv(0x10); // Offset
+		
+		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK; // Display mode
+		
+			
+		for(k = 0; k < 128; k++)
+			spi_send_recv(0x0);
+	
+	}
+}
+
+
 int main(void) {
+	
 	/* Set up peripheral bus clock */
 	OSCCON &= ~0x180000;
 	OSCCON |= 0x080000;
@@ -304,13 +278,14 @@ int main(void) {
 	SPI2CONSET = 0x8000;
 	
 	display_init();
-	display_string(0, "suchasdfs world");
-	display_string(1, "much hello");
-	display_string(2, "many text");
-	display_string(3, "wow");
+	//display_string(0, "such world");
+	//display_string(1, "much hello");
+	//display_string(2, "many text");
+	//display_string(3, "wow");
+	//setWhite(screen, 4, 128);
+	display_clear();
 	display_update();
-	
-	display_image(96, icon);
+	//display_image(96, icon);
 	
 	for(;;) ;
 	return 0;
