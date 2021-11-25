@@ -247,6 +247,9 @@ void display_white(){ //Gör allt vitt
 
 void set_pixel(int x, int y, int value){
 	
+	if(x > 127 || x < 0 || y > 31 || y < 0 ){
+		return;
+	}
 	// First we need to find the right index group
 	int ytemp = y/8; 
 	int index = ytemp *128;
@@ -340,10 +343,9 @@ int main(void) {
 	//display_string(3, "wow");
 	//setWhite(screen, 4, 128);
 	display_clear();
-	//set_pixel(31,127, 1);
-	//display_image(0, screen);
-	screen_reset();
-	display_image(100, screen);
+	set_pixel(127,31, 0);
+	display_image(0, screen);
+	
 	//display_white();
 	//display_update();
 	//display_image(96, icon);
