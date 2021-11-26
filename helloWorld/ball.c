@@ -39,9 +39,7 @@ void moveY(){
     }
 }
 
-void drawBall(){
-    set_pixel(xPos,yPos);
-}
+
 
 void initBall(){
     xPos = 64;

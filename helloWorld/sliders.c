@@ -44,14 +44,4 @@ void setYPosRight(int y){
  * @brief Draws the sliders
  * 
  */
-void drawSliders(){
-    int yLeft = yPosLeft;
-    int yRight = yPosRight;
-    int i; // Length of slider
-    for(i = height; i > 0; i --){
-        set_pixel(xPosLeft,yLeft);
-        set_pixel(xPosRight,yRight);
-        yLeft ++;
-        yRight ++;
-    }
-}
+

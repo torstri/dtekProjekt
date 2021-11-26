@@ -80,14 +80,17 @@ int main(void) {
 	//set_pixel(16,64,1);
 	//screen[320] = 255;
 	//set_on_all();
-	draw_start(screen);
+	start_game();
 	draw_image(0, screen);
 	
 	//display_white();
 	//display_update();
 	//display_image(96, icon);
 	
-	for(;;) ;
+	for(;;){
+
+	} 
+	
 	return 0;
 }
 
