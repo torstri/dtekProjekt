@@ -78,8 +78,9 @@ int main(void) {
 	//display_image(0, screen);
 	screen_reset();
 	//set_pixel(16,64,1);
-	screen[320] = 255;
+	//screen[320] = 255;
 	//set_on_all();
+	draw_arena(screen);
 	draw_image(0, screen);
 	
 	//display_white();
