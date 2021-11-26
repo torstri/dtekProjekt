@@ -40,5 +40,5 @@ void draw_sliders(uint8_t *data){
 void draw_start(uint8_t *data){
     draw_arena(data);
     draw_sliders(data);
-
+    initBall();
 }

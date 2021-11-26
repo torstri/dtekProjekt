@@ -55,5 +55,3 @@ void drawSliders(){
         yRight ++;
     }
 }
-
-
