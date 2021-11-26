@@ -188,7 +188,7 @@ void display_image(int x, const uint8_t *data) {
 	int i, j;
 	
 	for(i = 0; i < 4; i++) {
-		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
+		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK; // Command mode
 		spi_send_recv(0x22);
 		spi_send_recv(i);
 		
@@ -197,9 +197,36 @@ void display_image(int x, const uint8_t *data) {
 		
 		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK;
 		
-		for(j = 0; j < 32; j++)
+		for(j = 0; j < 128; j++)
 			spi_send_recv(~data[i*32 + j]);
 	}
+}
+
+void draw_image(int x, const uint8_t *data){
+    DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK; // Command mode
+	spi_send_recv(0x22);
+	spi_send_recv(0);
+    spi_send_recv(3);
+    spi_send_recv(0x21);
+    spi_send_recv(0x00);
+    spi_send_recv(127);
+
+    spi_send_recv(0x20); // Ändra till horisontell istället för page-adressing mode
+    spi_send_recv(0x00);
+
+    int j;
+	DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK;
+    for(j = 0; j < 512; j++){
+        
+        spi_send_recv(data[j]);
+    }
+}
+
+void set_on_all(){
+    int i;
+    for(i = 0; i < 512; i ++){
+        screen[i] = 255;
+    }
 }
 
 void display_update() {
@@ -259,16 +286,15 @@ void set_pixel(int x, int y, int value){
 
 	//We now have the right main index group
 	//Now we need to find the right index for the subgroup
-	int ytemp2 = y % 8;
-	value = value << ytemp2;
-	if(!value){ // If we want to turn off
-		int shift = 1;
-		shift = shift << ytemp2;
-		screen[index] &= !shift;
-	}else{
-	screen[index] |= value;
-	}
+	int ytemp2 = y % 8;  // Tells which pixel in the index to change since every index contains 8 pixels.
+    int mask = 1;
+    mask = mask << ytemp2; // If ytemp2 = 3 (fourth pixel), mask = 0000 1000
 
+	if(!value){ // If we want to turn off
+        screen[index] &= !mask; // xxxx xxxx && 1111 0111 = xxxx 0xxx
+	}else{ // If we want to turn on
+	    screen[index] |= mask; // xxxx xxxx || 0000 1000 = xxxx 1xxx
+	}
 }
 
 void display_clear(){ // Gör allt svart

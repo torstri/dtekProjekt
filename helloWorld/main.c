@@ -73,11 +73,15 @@ int main(void) {
 	//display_string(2, "many text");
 	//display_string(3, "wow");
 	//setWhite(screen, 4, 128);
-	//display_clear();
+	display_clear();
 	//set_pixel(16,64, 1);
-	display_image(0, screen);
+	//display_image(0, screen);
 	screen_reset();
-	display_image(0, screen);
+	//set_pixel(16,64,1);
+	screen[320] = 255;
+	//set_on_all();
+	draw_image(0, screen);
+	
 	//display_white();
 	//display_update();
 	//display_image(96, icon);
