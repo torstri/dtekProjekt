@@ -67,27 +67,21 @@ int main(void) {
 	/* Turn on SPI */
 	SPI2CONSET = 0x8000;
 	
+	//Initial setup for the display
 	display_init();
-	//display_string(0, "such world");
-	//display_string(1, "much hello");
-	//display_string(2, "many text");
-	//display_string(3, "wow");
-	//setWhite(screen, 4, 128);
+	// Clear display just in case
 	display_clear();
-	//set_pixel(16,64, 1);
-	//display_image(0, screen);
-	screen_reset();
-	//set_pixel(16,64,1);
-	//screen[320] = 255;
-	//set_on_all();
+	//Set all pixels to off
+	resetDisplay(screen);
+	//Start the game;
 	start_game();
-	draw_image(0, screen);
+	//Update the display
+	updateDisplay(screen);
+	delay(100);
 	
-	//display_white();
-	//display_update();
-	//display_image(96, icon);
 	
 	for(;;){
+		
 
 	} 
 	

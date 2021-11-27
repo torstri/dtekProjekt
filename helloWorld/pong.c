@@ -1,6 +1,11 @@
 #include <pic32mx.h>
 #include <stdint.h>
 
+/**
+ * @brief Keeps track of ball x and y position,
+ * length, width and speed in x and y direction
+ * 
+ */
 struct ballElement{
     int xPos, yPos;
     int xSpeed, ySpeed;
@@ -8,65 +13,88 @@ struct ballElement{
     int length;
 };
 
+/**
+ * @brief Keeps track of slider length and 
+ * x and y position
+ * 
+ */
 struct sliderElement{
     int xPos, yPos;
     int length;
 };
 
-struct ballElement ball;
-struct sliderElement leftSlider, rightSlider;
+struct ballElement ball; // Create ball element
+struct sliderElement leftSlider, rightSlider; // Create left and right sliders
 
+/**
+ * @brief Initialize the ball's x and y position, speed,
+ * width and length
+ * 
+ */
 void ballInit(){
-    ball.xPos = 16;
-    ball.yPos = 9;
-    ball.ySpeed = 0;
+    // Start at (64,16)
+    ball.xPos = 64;
+    ball.yPos = 16;
+    //Travel horizontally
     ball.xSpeed = 1;
-    ball.width = 1;
-    ball.length = 1;
+    ball.ySpeed = 0;
+    // Set size to 2 by 2 pixels
+    ball.width = 2;
+    ball.length = 2;
 
 }
 
+/**
+ * @brief Initialize sliders' x and y position,
+ * and length
+ * 
+ */
 void sliderInit(){
-    leftSlider.xPos = 64;
-    leftSlider.yPos = 16;
+    //Start left slider at (10,9)
+    leftSlider.xPos = 10;
+    leftSlider.yPos = 9;
     leftSlider.length = 13;
-
-    rightSlider.xPos = 112;
+    // Start right slider at (120,9)
+    rightSlider.xPos = 120;
     rightSlider.yPos = 9;
     rightSlider.length = 13;
 
 
 }
 
-void drawBall(){
+/**
+ * @brief Draws the ball at current position
+ * 
+ */
+void drawBall(int value){
     int i,j;
     int ytemp = ball.yPos;
     
-    for(i = 2; i > 0; i --){
+    for(i = ball.length; i > 0; i --){
 
         int xtemp = ball.xPos;
 
-        for(j = 2; j > 0; j --){
-            set_pixel(xtemp, ytemp);
-            xtemp++;
+        for(j = ball.width; j > 0; j --){
+            set_pixel(xtemp, ytemp, value);
+            xtemp ++;
         }
         ytemp ++;
     }
 }
 
-void drawSliders(){
+void drawSliders(int value){
 
     int i = 0;
 
     while(i < leftSlider.length){
-        set_pixel(leftSlider.xPos, leftSlider.yPos + i);
-        set_pixel(rightSlider.xPos, rightSlider.yPos + i);
+        set_pixel(leftSlider.xPos, leftSlider.yPos + i, value);
+        set_pixel(rightSlider.xPos, rightSlider.yPos + i, value);
         i ++;
     }
 
 }
 
-void draw_arena(){
+void drawArena(){
 
     // Roof left = (0, 0)
     // Roof right = (127, 0)
@@ -87,11 +115,22 @@ void draw_arena(){
     }
 }
 
+/**
+ * @brief Moves the ball around the arena
+ * 
+ */
+void moveBall(){
+    drawBall(0);
+    ball.xPos += ball.xSpeed;
+    ball.yPos += ball.ySpeed;
+    drawBall(1);
+}
+
 start_game(){
     sliderInit();
     ballInit();
 
-    draw_arena();
-    drawBall();
-    drawSliders();
+    drawArena();
+    drawBall(1);
+    drawSliders(1);
 }
