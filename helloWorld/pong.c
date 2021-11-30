@@ -7,6 +7,7 @@
  * 
  */
 struct ballElement{
+
     int xPos, yPos;
     int xSpeed, ySpeed;
     int width;
@@ -19,6 +20,7 @@ struct ballElement{
  * 
  */
 struct sliderElement{
+
     int xPos, yPos;
     int length;
 };
@@ -32,6 +34,7 @@ struct sliderElement leftSlider, rightSlider; // Create left and right sliders
  * 
  */
 void ballInit(){
+
     // Start at (64,16)
     ball.xPos = 64;
     ball.yPos = 16;
@@ -50,6 +53,7 @@ void ballInit(){
  * 
  */
 void sliderInit(){
+
     //Start left slider at (10,9)
     leftSlider.xPos = 10;
     leftSlider.yPos = 9;
@@ -58,8 +62,6 @@ void sliderInit(){
     rightSlider.xPos = 120;
     rightSlider.yPos = 9;
     rightSlider.length = 13;
-
-
 }
 
 /**
@@ -67,6 +69,7 @@ void sliderInit(){
  * 
  */
 void drawBall(int value){
+
     int i,j;
     int ytemp = ball.yPos;
     
@@ -91,7 +94,6 @@ void drawSliders(int value){
         set_pixel(rightSlider.xPos, rightSlider.yPos + i, value);
         i ++;
     }
-
 }
 
 void drawArena(){
@@ -120,6 +122,7 @@ void drawArena(){
  * 
  */
 void moveBall(){
+
     //Checks if the ball has hit a slider
     if(samePosition(ball, leftSlider) || samePosition(ball, rightSlider)){
         ball.xSpeed = !ball.xSpeed;
@@ -141,6 +144,7 @@ void moveBall(){
  * @return int 
  */
 int samePosition(struct ballElement boll, struct sliderElement slider){
+    
     int i, j, k;
     int xTempBall = boll.xPos;
     int yTempBall = boll.yPos;
