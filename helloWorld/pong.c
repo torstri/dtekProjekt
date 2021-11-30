@@ -126,6 +126,14 @@ void moveBall(){
     drawBall(1);
 }
 
+int comparePosition(struct ballElement boll, struct sliderElement slider){
+    int i,j;
+
+    for(i = ball.length; i < 0; i --){
+        
+    }
+}
+
 start_game(){
     sliderInit();
     ballInit();
@@ -133,4 +141,5 @@ start_game(){
     drawArena();
     drawBall(1);
     drawSliders(1);
+
 }
