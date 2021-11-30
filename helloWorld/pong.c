@@ -120,18 +120,56 @@ void drawArena(){
  * 
  */
 void moveBall(){
+    //Checks if the ball has hit a slider
+    if(samePosition(ball, leftSlider) || samePosition(ball, rightSlider)){
+        ball.xSpeed = !ball.xSpeed;
+        ball.ySpeed = !ball.ySpeed;
+    }
+
+
     drawBall(0);
     ball.xPos += ball.xSpeed;
     ball.yPos += ball.ySpeed;
     drawBall(1);
 }
 
-int comparePosition(struct ballElement boll, struct sliderElement slider){
-    int i,j;
+/**
+ * @brief Checks if ball has hit a slider
+ * 
+ * @param boll 
+ * @param slider 
+ * @return int 
+ */
+int samePosition(struct ballElement boll, struct sliderElement slider){
+    int i, j, k;
+    int xTempBall = boll.xPos;
+    int yTempBall = boll.yPos;
+    int xTempSlider = slider.xPos;
+    int yTempSlider = slider.yPos;
 
-    for(i = ball.length; i < 0; i --){
-        
+    //Iterate through ball length
+    for(j = boll.length; j >  0 ; j -- ){
+        // Iterate through ball width
+        for(k = boll.width; k > 0 ; k --){
+
+            // Checks if the corner (xTempBall, yTempBall) of the ball has hit the slider
+            for(i = slider.length; i > 0; i --){
+                
+                if(xTempBall == xTempSlider && yTempBall == yTempSlider){
+                
+                    return 1;
+                }
+                // Increment yPos of slider
+                yTempSlider ++;
+            }
+            // Increment xPos of ball
+            xTempBall ++;
+        }
+        // Increment yPos of ball
+        yTempBall ++;
     }
+    
+    return 0;
 }
 
 start_game(){
