@@ -26,7 +26,7 @@ uint8_t screen[512]; // Själva bilden, ett tal är 8-bitar, alltså 8 rader ver
 					 // index 384 - 511 blir [24, 0] - [31, 127]
 
 
-char textbuffer[4][16];
+char textbuffer[4][16]; // Egentligen onödig men kan vara najs för att hårdkoda grejer senare
 
 
 
