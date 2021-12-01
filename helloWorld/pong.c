@@ -36,11 +36,11 @@ struct sliderElement leftSlider, rightSlider; // Create left and right sliders
 void ballInit(){
 
     // Start at (64,16)
-    ball.xPos = 13;
+    ball.xPos = 64;
     ball.yPos = 16;
     //Travel horizontally
     ball.xSpeed = 1;
-    ball.ySpeed = 0;
+    ball.ySpeed = 1;
     // Set size to 2 by 2 pixels
     ball.width = 2;
     ball.length = 2;
@@ -123,11 +123,24 @@ void drawArena(){
  */
 void moveBall(){
 
-    //Checks if the ball has hit a slider
-    if(samePosition(ball, leftSlider) || samePosition(ball, rightSlider)){
-        set_pixel(64,16,1);
-        ball.xSpeed = -ball.xSpeed;
+    
+    struct ballElement tempBall;
+    tempBall = ball;
+    
+    //Check if ball has hit arena roof or floor
+    if(ball.yPos == 1 || ball.yPos == 30){
         ball.ySpeed = -ball.ySpeed;
+    }
+    if(ball.xPos == 1 || ball.xPos == 126){
+        ball.xSpeed = -ball.xSpeed;
+    }
+
+    //Checks if the ball will hit a slider
+    tempBall.xPos += tempBall.xSpeed;
+    tempBall.yPos += tempBall.ySpeed;
+
+    if(samePosition(tempBall, leftSlider) || samePosition(tempBall, rightSlider)){
+        ball.xSpeed = -ball.xSpeed;
     }
     drawBall(0);
     // Increment or decrement x and y positions
@@ -141,27 +154,39 @@ void moveBall(){
  * @param btns 
  */
 void moveSliders(int btns){
+
+    
     drawSliders(0, 0);
-    // Button 1 was pressed move right slider up
+    // Button 1 was pressed move right slider down
     if(btns & 0b1){
+        if(rightSlider.yPos + rightSlider.length < 31){
 
-        rightSlider.yPos ++;
+            rightSlider.yPos ++;
+        }
     }
 
-    // Button 2 was pressed move right slider down
+    // Button 2 was pressed move right slider up
     if(btns & 0b10){
+        if(rightSlider.yPos > 0){
 
-        rightSlider.yPos --;
+            rightSlider.yPos --;
+        }
     }
 
-    // Button 3 was pressed move left slider up
+    // Button 3 was pressed move left slider down
     if(btns & 0b100){
-        leftSlider.yPos ++;
+        if(leftSlider.yPos + leftSlider.length < 31){
+
+            leftSlider.yPos ++;
+        }
     }
 
-    // Button 4 was pressed move left slider down
+    // Button 4 was pressed move left slider up
     if(btns & 0b1000){
-        leftSlider.yPos --;
+        if(leftSlider.yPos > 0){
+
+            leftSlider.yPos --;
+        }
     }
     drawSliders(1, 1);
 
@@ -180,13 +205,14 @@ int samePosition(struct ballElement boll, struct sliderElement slider){
     int xTempBall = boll.xPos;
     int yTempBall = boll.yPos;
     int xTempSlider = slider.xPos;
-    int yTempSlider = slider.yPos;
+    
 
     //Iterate through ball length
     for(j = boll.length; j >  0 ; j -- ){
         // Iterate through ball width
         for(k = boll.width; k > 0 ; k --){
-
+            
+            int yTempSlider = slider.yPos;
             // Checks if the corner (xTempBall, yTempBall) of the ball has hit the slider
             for(i = slider.length; i > 0; i --){
                 
@@ -207,7 +233,7 @@ int samePosition(struct ballElement boll, struct sliderElement slider){
     return 0;
 }
 
-start_game(uint8_t *data){
+void start_game(uint8_t *data){
     sliderInit();
     ballInit();
 
@@ -227,7 +253,9 @@ void continueGame(uint8_t *data){
             moveBall();
             int btns = getButtons();
             moveSliders(btns);
+            drawArena();
             updateDisplay(data);
+
             IFS(0) &= 0xFEFF; // Set the intercept flag to zero
         }
 }
