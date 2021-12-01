@@ -8,6 +8,7 @@ int score [2]; // Keeps track of score, index 0 = player 1, index 2 = player 2
  * length, width and speed in x and y direction
  * 
  */
+typedef struct ballElement ballElement;
 struct ballElement{
 
     int xPos, yPos;
@@ -21,6 +22,7 @@ struct ballElement{
  * x and y position
  * 
  */
+typedef struct sliderElement sliderElement;
 struct sliderElement{
 
     int xPos, yPos;
@@ -59,7 +61,7 @@ void sliderInit(){
     //Start left slider at (10,9)
     leftSlider.xPos = 10;
     leftSlider.yPos = 9;
-    leftSlider.length = 13;
+    leftSlider.length = 16;
     // Start right slider at (120,9)
     rightSlider.xPos = 120;
     rightSlider.yPos = 9;
@@ -182,15 +184,11 @@ void moveBall(){
         struct sliderElement tempLeft = leftSlider;
         struct sliderElement tempRight = rightSlider;
         int lengthslider = 0;
+
         for(i = tempLeft.yPos; i < tempLeft.yPos + tempLeft.length; i ++){
-            if(lengthslider <= 4){
-                ball.ySpeed = -1;
-            }else if(lengthslider > 4 && lengthslider <= 8 ){
-                ball.ySpeed = 0;
-            }else if(lengthslider > 8){
-                ball.ySpeed = 2;
-            }
-        
+
+
+            
         }
         ball.xSpeed = -ball.xSpeed;
     }
@@ -285,6 +283,7 @@ int samePosition(struct ballElement boll, struct sliderElement slider){
     
     return 0;
 }
+
 /**
  * @brief Increases the score
  * 
@@ -322,11 +321,10 @@ void start_game(uint8_t *data){
  * @param data 
  */
 void continueGame(uint8_t *data){
-     int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
-        timerInterrupt >>= 8;
+    int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
+    timerInterrupt >>= 8;
         
         if(timerInterrupt){
-
 
             moveBall();
             int btns = getButtons();
