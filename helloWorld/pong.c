@@ -85,13 +85,13 @@ void drawBall(int value){
     }
 }
 
-void drawSliders(int value){
+void drawSliders(int valueLeft, int valueRight){
 
     int i = 0;
 
     while(i < leftSlider.length){
-        set_pixel(leftSlider.xPos, leftSlider.yPos + i, value);
-        set_pixel(rightSlider.xPos, rightSlider.yPos + i, value);
+        set_pixel(leftSlider.xPos, leftSlider.yPos + i, valueLeft);
+        set_pixel(rightSlider.xPos, rightSlider.yPos + i, valueRight);
         i ++;
     }
 }
@@ -179,9 +179,10 @@ start_game(){
 
     drawArena();
     drawBall(1);
-    drawSliders(1);
+    drawSliders(1,1);
 
     while(1){
+        
         int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
         
         if(timerInterrupt){
@@ -199,9 +200,30 @@ start_game(){
             drawBall(1);
 
             int btns = getButtons();
-            // Button 1 was pressed move left slider
-            if()
+            // Button 1 was pressed move left slider up
+            if(btns && 0b1){
 
+                leftSlider.yPos ++;
+            }
+
+            // Button 2 was pressed move left slider down
+            if(btns && 0b10){
+
+                leftSlider.yPos --;
+            }
+
+            // Button 3 was pressed move right slider up
+            if(btns && 0b100){
+                rightSlider.yPos ++;
+            }
+
+            // Button 4 was pressed move right slider down
+            if(btns && 0b1000){
+                rightSlider.yPos --;
+            }
+
+            // Update display
+            drawSliders(1,1);
         }
     }
 
