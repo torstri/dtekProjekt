@@ -83,7 +83,6 @@ int main(void) {
 	//updateDisplay(screen);
 	//delay(100);
 	
-	
 	return 0;
 }
 

@@ -48,7 +48,6 @@ void ballInit(){
     // Set size to 2 by 2 pixels
     ball.width = 2;
     ball.length = 2;
-
 }
 
 /**
@@ -131,8 +130,6 @@ void drawArena(){
     }
 }
 
-
-
 /**
  * @brief If a goal is scored the score is increased and arena reset
  * 
@@ -146,8 +143,8 @@ void goal(int player1, int player2){
     resetDisplay();
     increaseScore(player1, player2);
     start_game();
-
 }
+
 /**
  * @brief Moves the ball around the arena
  * 
@@ -187,8 +184,10 @@ void moveBall(){
 
         for(i = tempLeft.yPos; i < tempLeft.yPos + tempLeft.length; i ++){
 
-
-            
+            /**
+             * @brief Insert code here
+             * 
+             */
         }
         ball.xSpeed = -ball.xSpeed;
     }
