@@ -159,7 +159,7 @@ void moveBall(){
     tempBall.yPos += tempBall.ySpeed;
 
     // Check if ball has hit arena roof or floor
-    if(ball.yPos == 1 || ball.yPos == 30){
+    if(tempBall.yPos <= 1 || tempBall.yPos >= 30){
         ball.ySpeed = -ball.ySpeed;
     }
 
@@ -173,9 +173,10 @@ void moveBall(){
         goal(1, 0);
     }
 
-    //Check if ball has hit slider
+    //Check if ball has hit right slider
     if(samePosition(tempBall, leftSlider) || samePosition(tempBall, rightSlider)){
         
+
         // Check where on slider
         int i;
         struct sliderElement tempLeft = leftSlider;
@@ -183,7 +184,7 @@ void moveBall(){
         int lengthslider = 0;
         for(i = tempLeft.yPos; i < tempLeft.yPos + tempLeft.length; i ++){
             if(lengthslider <= 4){
-                ball.ySpeed = -2;
+                ball.ySpeed = -1;
             }else if(lengthslider > 4 && lengthslider <= 8 ){
                 ball.ySpeed = 0;
             }else if(lengthslider > 8){
@@ -191,9 +192,7 @@ void moveBall(){
             }
         
         }
-            // Check where on slider
-            for(i =)
-            ball.xSpeed = -ball.xSpeed;
+        ball.xSpeed = -ball.xSpeed;
     }
 
     drawBall(0);
