@@ -14,7 +14,7 @@ void btnsInit(void){
  * 
  * @return int 
  */
-int getbtns(void)
+int getButtons(void)
 {
     int buttons1 = PORTF & 0b10; // xxXx
     buttons1 >>= 1; // xxxX

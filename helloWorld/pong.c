@@ -40,7 +40,7 @@ void ballInit(){
     ball.yPos = 16;
     //Travel horizontally
     ball.xSpeed = 1;
-    ball.ySpeed = 0;
+    ball.ySpeed = 1;
     // Set size to 2 by 2 pixels
     ball.width = 2;
     ball.length = 2;
@@ -128,12 +128,9 @@ void moveBall(){
         ball.xSpeed = !ball.xSpeed;
         ball.ySpeed = !ball.ySpeed;
     }
-
-
-    drawBall(0);
+    // Increment or decrement x and y positions
     ball.xPos += ball.xSpeed;
     ball.yPos += ball.ySpeed;
-    drawBall(1);
 }
 
 /**
@@ -144,7 +141,7 @@ void moveBall(){
  * @return int 
  */
 int samePosition(struct ballElement boll, struct sliderElement slider){
-    
+
     int i, j, k;
     int xTempBall = boll.xPos;
     int yTempBall = boll.yPos;
@@ -183,5 +180,29 @@ start_game(){
     drawArena();
     drawBall(1);
     drawSliders(1);
+
+    while(1){
+        int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
+        
+        if(timerInterrupt){
+
+            //Checks if the ball has hit a slider
+            if(samePosition(ball, leftSlider) || samePosition(ball, rightSlider)){
+                ball.xSpeed = !ball.xSpeed;
+                ball.ySpeed = !ball.ySpeed;
+            }
+            // Erase ball
+            drawBall(0);
+            // Move ball
+            moveBall();
+            // Add ball to array
+            drawBall(1);
+
+            int btns = getButtons();
+            // Button 1 was pressed move left slider
+            if()
+
+        }
+    }
 
 }
