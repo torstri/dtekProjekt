@@ -40,7 +40,7 @@ void ballInit(){
     ball.yPos = 16;
     //Travel horizontally
     ball.xSpeed = 1;
-    ball.ySpeed = 1;
+    ball.ySpeed = 0;
     // Set size to 2 by 2 pixels
     ball.width = 2;
     ball.length = 2;
@@ -123,12 +123,13 @@ void drawArena(){
  */
 void moveBall(){
 
-    drawBall(0);
     //Checks if the ball has hit a slider
     if(samePosition(ball, leftSlider) || samePosition(ball, rightSlider)){
-        ball.xSpeed = !ball.xSpeed;
-        ball.ySpeed = !ball.ySpeed;
+        set_pixel(64,16,1);
+        ball.xSpeed = -ball.xSpeed;
+        ball.ySpeed = -ball.ySpeed;
     }
+    drawBall(0);
     // Increment or decrement x and y positions
     ball.xPos += ball.xSpeed;
     ball.yPos += ball.ySpeed;
@@ -140,27 +141,30 @@ void moveBall(){
  * @param btns 
  */
 void moveSliders(int btns){
-    // Button 1 was pressed move left slider up
-    if(btns && 0b1){
+    drawSliders(0, 0);
+    // Button 1 was pressed move right slider up
+    if(btns & 0b1){
 
-        leftSlider.yPos ++;
-    }
-
-    // Button 2 was pressed move left slider down
-    if(btns && 0b10){
-
-        leftSlider.yPos --;
-    }
-
-    // Button 3 was pressed move right slider up
-    if(btns && 0b100){
         rightSlider.yPos ++;
     }
 
-    // Button 4 was pressed move right slider down
-    if(btns && 0b1000){
+    // Button 2 was pressed move right slider down
+    if(btns & 0b10){
+
         rightSlider.yPos --;
     }
+
+    // Button 3 was pressed move left slider up
+    if(btns & 0b100){
+        leftSlider.yPos ++;
+    }
+
+    // Button 4 was pressed move left slider down
+    if(btns & 0b1000){
+        leftSlider.yPos --;
+    }
+    drawSliders(1, 1);
+
 }
 
 /**
@@ -217,11 +221,13 @@ void continueGame(uint8_t *data){
      int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
         timerInterrupt >>= 8;
         
-        if(!timerInterrupt){
+        if(timerInterrupt){
+
 
             moveBall();
+            int btns = getButtons();
+            moveSliders(btns);
             updateDisplay(data);
             IFS(0) &= 0xFEFF; // Set the intercept flag to zero
-            //display_white();   
         }
 }

@@ -16,6 +16,5 @@ void timerInit(){
     IPCSET(2) = 0x0000000C;
     IPCSET(2) = 0x00000001;
     IECSET(0) = 0x00000100;
-    enable_interrupt();
     // Add enable_interrups somewhere in assembly code?
 }
