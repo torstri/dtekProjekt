@@ -62,11 +62,15 @@ int main(void) {
 	/* Clear SPIROV*/
 	SPI2STATCLR &= ~0x40;
 	/* Set CKP = 1, MSTEN = 1; */
-        SPI2CON |= 0x60;
+    SPI2CON |= 0x60;
 	
 	/* Turn on SPI */
 	SPI2CONSET = 0x8000;
 	
+	// Initialize timers
+	timerInit();
+	// Initialize btns
+	btnsInit();
 	//Initial setup for the display
 	display_init();
 	// Clear display just in case
@@ -74,16 +78,15 @@ int main(void) {
 	//Set all pixels to off
 	resetDisplay(screen);
 	//Start the game;
-	start_game();
+	start_game(screen);
+	
+	while(1){
+		continueGame(screen);
+	}
 	//Update the display
-	updateDisplay(screen);
-	delay(100);
+	//updateDisplay(screen);
+	//delay(100);
 	
-	
-	for(;;){
-		
-
-	} 
 	
 	return 0;
 }

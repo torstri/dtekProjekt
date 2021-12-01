@@ -5,8 +5,8 @@
 // Btn2-4 = RD5-7 = Register D bit 5-7 in both TRIS and PORT 
 
 void btnsInit(void){
-    TRISD |= 0xFE0; // Set btns 2-4 to input
-    TRISF |= 0b10; // Set bit 1 to input
+    TRISD |= 0xE0; // Set btns 2-4 to input
+    TRISF |= 0x2; // Set bit 1 to input
 }
 
 /**
@@ -14,10 +14,10 @@ void btnsInit(void){
  * 
  * @return int 
  */
-int getbtns(void)
+int getButtons(void)
 {
-    int buttons1 = PORF & 0b10; // xxXx
-    buttons >>= 1; // xxxX
+    int buttons1 = PORTF & 0x2; // xxXx
+    buttons1 >>= 1; // xxxX
     int buttons2to4 = PORTD & 0xE0; //ZZZz zzzz
     buttons2to4 >>= 4; // zzzz ZZZz
     buttons1 += buttons2to4;
