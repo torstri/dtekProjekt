@@ -1,6 +1,8 @@
 #include <pic32mx.h>
 #include <stdint.h>
 
+
+int score [2]; // Keeps track of score, index 0 = player 1, index 2 = player 2
 /**
  * @brief Keeps track of ball x and y position,
  * length, width and speed in x and y direction
@@ -242,6 +244,22 @@ int samePosition(struct ballElement boll, struct sliderElement slider){
     
     return 0;
 }
+/**
+ * @brief Increases the score
+ * 
+ * @param player1 set to 1 if player 1 scored
+ * @param player2 set to 1 if player 2 scored
+ */
+void increaseScore(int player1, int player2){
+    if(player1){
+        score[0] ++;
+    }else if(player2){
+        score[1] ++;
+    }
+}
+
+
+
 /**
  * @brief Does the initial game setup
  * 
