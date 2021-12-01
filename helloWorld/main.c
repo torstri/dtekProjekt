@@ -6,7 +6,6 @@
 #define DISPLAY_COMMAND_DATA PORTFbits.RF4
 #define DISPLAY_RESET PORTGbits.RG9
 
-
 #define DISPLAY_VDD_PORT PORTF
 #define DISPLAY_VDD_MASK 0x40
 #define DISPLAY_VBATT_PORT PORTF
@@ -15,9 +14,6 @@
 #define DISPLAY_COMMAND_DATA_MASK 0x10
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
-
-
-
 
 void delay(int cyc) {
 	int i;
