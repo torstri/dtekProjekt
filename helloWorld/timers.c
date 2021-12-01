@@ -7,7 +7,10 @@ void timerInit(){
     IPCSET(2) = 0x0000000C;
     IPCSET(2) = 0x00000001;
     IECSET(0) = 0x00000100;
-    
+
+    volatile int* trisE = (volatile int*) 0xbf886100;
+      *trisE |= 0xFFFFFF00;
+      TRISD |= 0xFE0;
     T2CON = 0x0; // Reset clock incase
     T2CON |= 0x8000; // Set timer on
     T2CON |= 0x70; // Set prescale to 256

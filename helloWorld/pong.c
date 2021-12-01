@@ -36,7 +36,7 @@ void ballInit(){
     ball.xPos = 64;
     ball.yPos = 16;
     //Travel horizontally
-    ball.xSpeed = 1;
+    ball.xSpeed = 8;
     ball.ySpeed = 0;
     // Set size to 2 by 2 pixels
     ball.width = 2;
@@ -141,5 +141,4 @@ start_game(){
     drawArena();
     drawBall(1);
     drawSliders(1);
-
 }

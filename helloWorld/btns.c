@@ -16,8 +16,8 @@ void btnsInit(void){
  */
 int getbtns(void)
 {
-    int buttons1 = PORF & 0b10; // xxXx
-    buttons >>= 1; // xxxX
+    int buttons1 = PORTF & 0b10; // xxXx
+    buttons1 >>= 1; // xxxX
     int buttons2to4 = PORTD & 0xE0; //ZZZz zzzz
     buttons2to4 >>= 4; // zzzz ZZZz
     buttons1 += buttons2to4;

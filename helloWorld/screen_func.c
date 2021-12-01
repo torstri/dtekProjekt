@@ -148,6 +148,27 @@ void display_white(){ //Gör allt vitt
 
 }
 
+void display_black(){ //Gör allt vitt
+	int i, j;
+
+	for(i = 0; i < 4; i ++){
+		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK; //Command mode
+		spi_send_recv(0x22);
+		spi_send_recv(i);
+
+		spi_send_recv(0x0);
+		spi_send_recv(0x10); // Offset
+
+		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK; // Display mode
+
+		for( j = 0; j < 128; j ++){
+			spi_send_recv(0x00);
+		}
+
+	}
+
+}
+
 void set_pixel(int x, int y, int value){
 	
 	if(x > 127 || x < 0 || y > 31 || y < 0 ){

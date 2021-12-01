@@ -74,12 +74,18 @@ int main(void) {
 	//Set all pixels to off
 	resetDisplay(screen);
 	//Start the game;
+	labinit();
 	start_game();
 	//Update the display
 	updateDisplay(screen);
 	delay(100);
 	
-	
+	while(1)
+	{
+	    labwork();
+	}
+	return 0;
+
 	for(;;){
 		
 
