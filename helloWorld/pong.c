@@ -135,22 +135,23 @@ void drawArena(){
  */
 void moveBall(){
 
-    
+    // Create temp ball to check next position    
     struct ballElement tempBall;
     tempBall = ball;
-    
-    //Check if ball has hit arena roof or floor
+    tempBall.xPos += tempBall.xSpeed;
+    tempBall.yPos += tempBall.ySpeed;
+
+    // Check if ball has hit arena roof or floor
     if(ball.yPos == 1 || ball.yPos == 30){
         ball.ySpeed = -ball.ySpeed;
     }
+
+    // Check if 
     if(ball.xPos == 1 || ball.xPos == 126){
         ball.xSpeed = -ball.xSpeed;
     }
 
-    //Checks if the ball will hit a slider
-    tempBall.xPos += tempBall.xSpeed;
-    tempBall.yPos += tempBall.ySpeed;
-
+    
     if(samePosition(tempBall, leftSlider) || samePosition(tempBall, rightSlider)){
         ball.xSpeed = -ball.xSpeed;
     }
@@ -256,6 +257,13 @@ void increaseScore(int player1, int player2){
     }else if(player2){
         score[1] ++;
     }
+}
+
+void goal(int player1, int player2){
+    // Draw goal
+
+    //Increase score
+    increaseScore(player1, player2);
 }
 
 
