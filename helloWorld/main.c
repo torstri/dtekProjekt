@@ -74,16 +74,15 @@ int main(void) {
 	//Set all pixels to off
 	resetDisplay(screen);
 	//Start the game;
-	start_game();
+	start_game(screen);
+	
+	while(1){
+		continueGame(screen);
+	}
 	//Update the display
-	updateDisplay(screen);
-	delay(100);
+	//updateDisplay(screen);
+	//delay(100);
 	
-	
-	for(;;){
-		
-
-	} 
 	
 	return 0;
 }

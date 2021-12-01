@@ -36,7 +36,7 @@ struct sliderElement leftSlider, rightSlider; // Create left and right sliders
 void ballInit(){
 
     // Start at (64,16)
-    ball.xPos = 64;
+    ball.xPos = 13;
     ball.yPos = 16;
     //Travel horizontally
     ball.xSpeed = 1;
@@ -123,6 +123,7 @@ void drawArena(){
  */
 void moveBall(){
 
+    drawBall(0);
     //Checks if the ball has hit a slider
     if(samePosition(ball, leftSlider) || samePosition(ball, rightSlider)){
         ball.xSpeed = !ball.xSpeed;
@@ -131,6 +132,35 @@ void moveBall(){
     // Increment or decrement x and y positions
     ball.xPos += ball.xSpeed;
     ball.yPos += ball.ySpeed;
+    drawBall(1);
+}
+/**
+ * @brief 
+ * 
+ * @param btns 
+ */
+void moveSliders(int btns){
+    // Button 1 was pressed move left slider up
+    if(btns && 0b1){
+
+        leftSlider.yPos ++;
+    }
+
+    // Button 2 was pressed move left slider down
+    if(btns && 0b10){
+
+        leftSlider.yPos --;
+    }
+
+    // Button 3 was pressed move right slider up
+    if(btns && 0b100){
+        rightSlider.yPos ++;
+    }
+
+    // Button 4 was pressed move right slider down
+    if(btns && 0b1000){
+        rightSlider.yPos --;
+    }
 }
 
 /**
@@ -173,58 +203,25 @@ int samePosition(struct ballElement boll, struct sliderElement slider){
     return 0;
 }
 
-start_game(){
+start_game(uint8_t *data){
     sliderInit();
     ballInit();
 
     drawArena();
     drawBall(1);
     drawSliders(1,1);
+    updateDisplay(data);
+}
 
-    while(1){
+void continueGame(uint8_t *data){
+     int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
+        timerInterrupt >>= 8;
         
-        int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
-        
-        if(timerInterrupt){
+        if(!timerInterrupt){
 
-            //Checks if the ball has hit a slider
-            if(samePosition(ball, leftSlider) || samePosition(ball, rightSlider)){
-                ball.xSpeed = !ball.xSpeed;
-                ball.ySpeed = !ball.ySpeed;
-            }
-            // Erase ball
-            drawBall(0);
-            // Move ball
             moveBall();
-            // Add ball to array
-            drawBall(1);
-
-            int btns = getButtons();
-            // Button 1 was pressed move left slider up
-            if(btns && 0b1){
-
-                leftSlider.yPos ++;
-            }
-
-            // Button 2 was pressed move left slider down
-            if(btns && 0b10){
-
-                leftSlider.yPos --;
-            }
-
-            // Button 3 was pressed move right slider up
-            if(btns && 0b100){
-                rightSlider.yPos ++;
-            }
-
-            // Button 4 was pressed move right slider down
-            if(btns && 0b1000){
-                rightSlider.yPos --;
-            }
-
-            // Update display
-            drawSliders(1,1);
+            updateDisplay(data);
+            IFS(0) &= 0xFEFF; // Set the intercept flag to zero
+            //display_white();   
         }
-    }
-
 }
