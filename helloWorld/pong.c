@@ -85,6 +85,12 @@ void drawBall(int value){
     }
 }
 
+/**
+ * @brief Draws the sliders
+ * 
+ * @param valueLeft 
+ * @param valueRight 
+ */
 void drawSliders(int valueLeft, int valueRight){
 
     int i = 0;
@@ -96,6 +102,10 @@ void drawSliders(int valueLeft, int valueRight){
     }
 }
 
+/**
+ * @brief Draws the initial arena
+ * 
+ */
 void drawArena(){
 
     // Roof left = (0, 0)
@@ -149,7 +159,7 @@ void moveBall(){
     drawBall(1);
 }
 /**
- * @brief 
+ * @brief Moves the sliders if buttons were pressed
  * 
  * @param btns 
  */
@@ -232,7 +242,11 @@ int samePosition(struct ballElement boll, struct sliderElement slider){
     
     return 0;
 }
-
+/**
+ * @brief Does the initial game setup
+ * 
+ * @param data 
+ */
 void start_game(uint8_t *data){
     sliderInit();
     ballInit();
@@ -242,7 +256,11 @@ void start_game(uint8_t *data){
     drawSliders(1,1);
     updateDisplay(data);
 }
-
+/**
+ * @brief The actual game
+ * 
+ * @param data 
+ */
 void continueGame(uint8_t *data){
      int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
         timerInterrupt >>= 8;
