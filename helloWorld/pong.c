@@ -175,7 +175,25 @@ void moveBall(){
 
     //Check if ball has hit slider
     if(samePosition(tempBall, leftSlider) || samePosition(tempBall, rightSlider)){
-        ball.xSpeed = -ball.xSpeed;
+        
+        // Check where on slider
+        int i;
+        struct sliderElement tempLeft = leftSlider;
+        struct sliderElement tempRight = rightSlider;
+        int lengthslider = 0;
+        for(i = tempLeft.yPos; i < tempLeft.yPos + tempLeft.length; i ++){
+            if(lengthslider <= 4){
+                ball.ySpeed = -2;
+            }else if(lengthslider > 4 && lengthslider <= 8 ){
+                ball.ySpeed = 0;
+            }else if(lengthslider > 8){
+                ball.ySpeed = 2;
+            }
+        
+        }
+            // Check where on slider
+            for(i =)
+            ball.xSpeed = -ball.xSpeed;
     }
 
     drawBall(0);
