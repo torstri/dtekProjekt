@@ -199,9 +199,9 @@ void display_clear(){ // Gör allt svart
  * 
  * @param data 
  */
-void resetDisplay(uint8_t *data){
+void resetDisplay(){
 	int i = 0;
 	for(i= 0; i < 512; i ++){
-		data[i] = 0;
+		screen[i] = 0;
 	}
 }

@@ -129,6 +129,23 @@ void drawArena(){
     }
 }
 
+
+
+/**
+ * @brief If a goal is scored the score is increased and arena reset
+ * 
+ * @param player1 
+ * @param player2 
+ */
+void goal(int player1, int player2){
+    // Draw goal
+
+    //Increase score
+    resetDisplay();
+    increaseScore(player1, player2);
+    start_game();
+
+}
 /**
  * @brief Moves the ball around the arena
  * 
@@ -146,15 +163,21 @@ void moveBall(){
         ball.ySpeed = -ball.ySpeed;
     }
 
-    // Check if 
-    if(ball.xPos == 1 || ball.xPos == 126){
-        ball.xSpeed = -ball.xSpeed;
+    // Check if ball has hit left wall (Player 2 scored)
+    if(tempBall.xPos == 0){
+        goal(0,1);
     }
 
-    
+    // Check if ball has hit right wall (Player 1 scored)
+    if(tempBall.xPos == 127){
+        goal(1, 0);
+    }
+
+    //Check if ball has hit slider
     if(samePosition(tempBall, leftSlider) || samePosition(tempBall, rightSlider)){
         ball.xSpeed = -ball.xSpeed;
     }
+
     drawBall(0);
     // Increment or decrement x and y positions
     ball.xPos += ball.xSpeed;
@@ -259,12 +282,6 @@ void increaseScore(int player1, int player2){
     }
 }
 
-void goal(int player1, int player2){
-    // Draw goal
-
-    //Increase score
-    increaseScore(player1, player2);
-}
 
 
 
