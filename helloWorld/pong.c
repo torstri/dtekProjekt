@@ -3,6 +3,7 @@
 
 
 int score [2]; // Keeps track of score, index 0 = player 1, index 2 = player 2
+
 /**
  * @brief Keeps track of ball x and y position,
  * length, width and speed in x and y direction
@@ -137,8 +138,8 @@ void drawArena(){
  * @param player2 
  */
 void goal(int player1, int player2){
-    // Draw goal
-
+    // Draw "goal" and score
+    
     //Increase score
     resetDisplay();
     increaseScore(player1, player2);
@@ -217,7 +218,7 @@ void moveSliders(int btns){
 
     // Button 2 was pressed move right slider up
     if(btns & 0b10){
-        if(rightSlider.yPos > 0){
+        if(rightSlider.yPos - 1 > 0){
 
             rightSlider.yPos --;
         }
@@ -233,11 +234,12 @@ void moveSliders(int btns){
 
     // Button 4 was pressed move left slider up
     if(btns & 0b1000){
-        if(leftSlider.yPos > 0){
+        if(leftSlider.yPos - 1 > 0){
 
             leftSlider.yPos --;
         }
     }
+    
     drawSliders(1, 1);
 
 }
