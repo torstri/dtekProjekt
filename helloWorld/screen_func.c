@@ -107,7 +107,7 @@ void set_on_all(){
     }
 }
 
-void display_update() {
+void display_update2() {
 	int i, j, k;
 	int c;
 	for(i = 0; i < 2; i++) { // "Fyra" rader, ett tal per rad, med varje rad innehåller ett 8-bitars tal
@@ -146,6 +146,30 @@ void display_white(){ //Gör allt vitt
 
 	}
 
+}
+
+void display_update() {
+	int i, j, k;
+	int c;
+	for(i = 0; i < 4; i++) {
+		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
+		spi_send_recv(0x22);
+		spi_send_recv(i);
+		
+		spi_send_recv(0x0);
+		spi_send_recv(0x10);
+		
+		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK;
+		
+		for(j = 0; j < 16; j++) {
+			c = textbuffer[i][j];
+			if(c & 0x80)
+				continue;
+			
+			for(k = 0; k < 8; k++)
+				spi_send_recv(font[c*8 + k]);
+		}
+	}
 }
 
 void set_pixel(int x, int y, int value){
@@ -194,6 +218,29 @@ void display_clear(){ // Gör allt svart
 	
 	}
 }
+
+/**
+ * @brief Displays a string on the LED display
+ * Or rather sets the array
+ * 
+ * @param row The row on which the string will be displayed
+ * @param string The string to display
+ */
+void displayString(int row, char *string){
+	int i;
+	if(row < 0 || row >= 4)
+		return;
+	if(!string)
+		return;
+	
+	for(i = 0; i < 16; i++)
+		if(*string) {
+			textbuffer[row][i] = *s;
+			s++;
+		} else
+			textbuffer[row][i] = ' ';
+}
+
 /**
  * @brief Resets all elements in the array
  * 

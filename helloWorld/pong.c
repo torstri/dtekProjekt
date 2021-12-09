@@ -61,11 +61,11 @@ void sliderInit(){
     //Start left slider at (10,9)
     leftSlider.xPos = 10;
     leftSlider.yPos = 9;
-    leftSlider.length = 16;
+    leftSlider.length = 8;
     // Start right slider at (120,9)
     rightSlider.xPos = 120;
     rightSlider.yPos = 9;
-    rightSlider.length = 13;
+    rightSlider.length = 8;
 }
 
 /**
@@ -139,7 +139,9 @@ void drawArena(){
  */
 void goal(int player1, int player2){
     // Draw "goal" and score
-    
+    if(player1){
+        displayString(1, "GOAL!!")
+    }
     //Increase score
     resetDisplay();
     increaseScore(player1, player2);
@@ -299,6 +301,11 @@ void increaseScore(int player1, int player2){
     }
 }
 
+void displayScore(){
+    char goalChar = "";
+    goalChar += score[0] + " : " + score[1];
+    displayString(2, goalChar);
+}
 
 
 
@@ -326,7 +333,7 @@ void continueGame(uint8_t *data){
     timerInterrupt >>= 8;
         
         if(timerInterrupt){
-
+        
             moveBall();
             int btns = getButtons();
             moveSliders(btns);
