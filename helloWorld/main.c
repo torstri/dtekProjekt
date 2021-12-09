@@ -75,7 +75,7 @@ int main(void) {
 	resetDisplay(screen);
 	//Start the game;
 	start_game(screen);
-	displayString(3, "Hello");
+	displayString(screen, 3, "Hello");
 	while(1){
 		continueGame(screen);
 	}
