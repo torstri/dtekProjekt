@@ -76,11 +76,12 @@ int main(void) {
 	resetDisplay(screen);
 	//Start the game;
 	start_game(screen);
-	//display_string(0, "Wanna fuk?");
-	//display_updateTextBuffer();
-	while(1){
-		continueGame(screen);
-	}
+	char goalChar = "scorePlayer1 : scorePlayer2";
+	display_string(0, goalChar);
+	display_updateTextBuffer();
+	// while(1){
+	// 	continueGame(screen);
+	// }
 	//Update the display
 	//updateDisplay(screen);
 	//delay(100);
