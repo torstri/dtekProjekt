@@ -3,6 +3,7 @@
 
 
 int score [2]; // Keeps track of score, index 0 = player 1, index 2 = player 2
+char textbuffer[4][16]; // Egentligen onödig men kan vara najs för att hårdkoda grejer senare
 
 /**
  * @brief Keeps track of ball x and y position,
@@ -138,13 +139,42 @@ void drawArena(){
  * @param player2 
  */
 void goal(int player1, int player2){
-    // Draw "goal" and score
-    if(player1){
-        displayString(1, "GOAL!!")
+    // Goard clause
+    if(!(player1 || player2)){
+        return;
     }
-    //Increase score
+
+    // Reset textbuffer just in case
     resetDisplay();
-    increaseScore(player1, player2);
+
+    //Increase the score
+    if(player1){
+        score[0] ++;
+    }else{
+        score[1] ++;
+    }
+
+    // Display goal
+    char goalChar;
+    //goalChar = "" + score[0] + " : " + score[1];
+    //display_string(3, goalChar);
+    int counter = 0;
+    // Should make goalChar be displayed for 1 secoond
+    while(1){
+        int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
+        timerInterrupt >>= 8;
+        if(timerInterrupt){
+        
+            counter ++;
+            if(counter == 20){
+                break;
+            }
+            display_string(3, "Wanna funk?");
+            display_updateTextBuffer();
+            IFS(0) &= 0xFEFF; // Set the intercept flag to zero
+        }
+    }
+    // Restart  
     start_game();
 }
 
@@ -286,28 +316,6 @@ int samePosition(struct ballElement boll, struct sliderElement slider){
     
     return 0;
 }
-
-/**
- * @brief Increases the score
- * 
- * @param player1 set to 1 if player 1 scored
- * @param player2 set to 1 if player 2 scored
- */
-void increaseScore(int player1, int player2){
-    if(player1){
-        score[0] ++;
-    }else if(player2){
-        score[1] ++;
-    }
-}
-
-void displayScore(){
-    char goalChar = "";
-    goalChar += score[0] + " : " + score[1];
-    displayString(2, goalChar);
-}
-
-
 
 /**
  * @brief Does the initial game setup

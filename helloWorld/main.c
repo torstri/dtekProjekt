@@ -19,6 +19,7 @@ void delay(int cyc) {
 	int i;
 	for(i = cyc; i > 0; i--);
 }
+char textbuffer[4][16]; // Egentligen onödig men kan vara najs för att hårdkoda grejer senare
 
 uint8_t screen[512]; // Själva bilden, ett tal är 8-bitar, alltså 8 rader vertikalt, sen blir 
 					 // index 0 - 127 
@@ -75,7 +76,8 @@ int main(void) {
 	resetDisplay(screen);
 	//Start the game;
 	start_game(screen);
-	displayString(screen, 3, "Hello");
+	//display_string(0, "Wanna fuk?");
+	//display_updateTextBuffer();
 	while(1){
 		continueGame(screen);
 	}
