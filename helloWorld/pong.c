@@ -161,6 +161,8 @@ void goal(int player1, int player2){
     int scorePlayer2 = 0x30 + score[1];
     int counter = 0;
     // Should make goalChar be displayed for 1 secoond
+    clear_textbuffer();
+    int won = 0;
     while(1){
         int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
         timerInterrupt >>= 8;
@@ -169,8 +171,10 @@ void goal(int player1, int player2){
             // Check if someone has won
             if(score[0] == 5){
                 display_string(1, "Player 1 won!!");
+                won = 1;
             }else if( score[1] == 5){
                 display_string(1, "Player 2 won!!");
+                won = 1;
             }else{ // Else display score
                 display_string(1, &scorePlayer1);
                 display_string(2, &scorePlayer2);
@@ -178,13 +182,16 @@ void goal(int player1, int player2){
             display_updateTextBuffer();
             IFS(0) &= 0xFEFF; // Set the intercept flag to zero
             counter ++;
-            if(counter == 20){
+            if(counter == 30){
                 break;
             }
         }
     }
 
-    
+    if(won){
+        score[0] = 0;
+        score[1] = 0;
+    }
     // Restart  
     start_game();
 }

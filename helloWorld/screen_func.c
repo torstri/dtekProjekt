@@ -167,6 +167,15 @@ uint8_t spi_send_recv(uint8_t data) {
 	return SPI2BUF;
 }
 
+void clear_textbuffer(){
+	int i, j;
+	for(i = 0; i < 16; i ++){
+		for(j = 0; j < 4; j ++){
+			textbuffer[i][j] = 0;
+		}
+	}
+}
+
 /**
  * @brief 
  * 
