@@ -155,10 +155,10 @@ void goal(int player1, int player2){
     }
 
     // Display goal
+    // char player1 = 0x30 //0
     char goalChar;
-    char scorePlayer1 = score[0];
-    char scorePlayer2 = score[1];
-    goalChar = "scorePlayer1 : scorePlayer2";
+    int scorePlayer1 = 0x30 + score[0];
+    int scorePlayer2 = 0x30 + score[1];
     int counter = 0;
     // Should make goalChar be displayed for 1 secoond
     while(1){
@@ -170,7 +170,8 @@ void goal(int player1, int player2){
             if(counter == 20){
                 break;
             }
-            display_string(3, goalChar);
+            display_string(1, scorePlayer1);
+            display_string(2, scorePlayer2);
             display_updateTextBuffer();
             IFS(0) &= 0xFEFF; // Set the intercept flag to zero
         }

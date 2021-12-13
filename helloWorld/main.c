@@ -75,16 +75,13 @@ int main(void) {
 	//Set all pixels to off
 	resetDisplay(screen);
 	//Start the game;
-	start_game(screen);
-	char goalChar = "scorePlayer1 : scorePlayer2";
-	display_string(0, goalChar);
+	//start_game(screen);
+	int goalChar = 0x30 + 1;
+	display_string(3, &goalChar);
 	display_updateTextBuffer();
-	// while(1){
+	//while(1){
 	// 	continueGame(screen);
 	// }
-	//Update the display
-	//updateDisplay(screen);
-	//delay(100);
 	
 	return 0;
 }
