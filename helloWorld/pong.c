@@ -2,12 +2,15 @@
 #include <stdint.h>
 
 
-int score [2]; // Keeps track of score, index 0 = player 1, index 2 = player 2
+char score [2]; // Keeps track of score, index 0 = player 1, index 2 = player 2
+char textbuffer[4][16]; // Egentligen onödig men kan vara najs för att hårdkoda grejer senare
+
 /**
  * @brief Keeps track of ball x and y position,
  * length, width and speed in x and y direction
  * 
  */
+typedef struct ballElement ballElement;
 struct ballElement{
 
     int xPos, yPos;
@@ -21,6 +24,7 @@ struct ballElement{
  * x and y position
  * 
  */
+typedef struct sliderElement sliderElement;
 struct sliderElement{
 
     int xPos, yPos;
@@ -46,7 +50,6 @@ void ballInit(){
     // Set size to 2 by 2 pixels
     ball.width = 2;
     ball.length = 2;
-
 }
 
 /**
@@ -59,11 +62,11 @@ void sliderInit(){
     //Start left slider at (10,9)
     leftSlider.xPos = 10;
     leftSlider.yPos = 9;
-    leftSlider.length = 13;
+    leftSlider.length = 8;
     // Start right slider at (120,9)
     rightSlider.xPos = 120;
     rightSlider.yPos = 9;
-    rightSlider.length = 13;
+    rightSlider.length = 8;
 }
 
 /**
@@ -130,6 +133,70 @@ void drawArena(){
 }
 
 /**
+ * @brief If a goal is scored the score is increased and arena reset
+ * 
+ * @param player1 
+ * @param player2 
+ */
+void goal(int player1, int player2){
+    // Goard clause
+    if(!(player1 || player2)){
+        return;
+    }
+
+    // Reset textbuffer just in case
+    resetDisplay();
+
+    //Increase the score
+    if(player1){
+        score[0] ++;
+    }else{
+        score[1] ++;
+    }
+
+    // Display goal
+    // char player1 = 0x30 //0
+    char goalChar;
+    int scorePlayer1 = 0x30 + score[0];
+    int scorePlayer2 = 0x30 + score[1];
+    int counter = 0;
+    // Should make goalChar be displayed for 1 secoond
+    clear_textbuffer();
+    int won = 0;
+    while(1){
+        int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
+        timerInterrupt >>= 8;
+        if(timerInterrupt){
+        
+            // Check if someone has won
+            if(score[0] == 5){
+                display_string(1, "Player 1 won!!");
+                won = 1;
+            }else if( score[1] == 5){
+                display_string(1, "Player 2 won!!");
+                won = 1;
+            }else{ // Else display score
+                display_string(1, &scorePlayer1);
+                display_string(2, &scorePlayer2);
+            }
+            display_updateTextBuffer();
+            IFS(0) &= 0xFEFF; // Set the intercept flag to zero
+            counter ++;
+            if(counter == 30){
+                break;
+            }
+        }
+    }
+
+    if(won){
+        score[0] = 0;
+        score[1] = 0;
+    }
+    // Restart  
+    start_game();
+}
+
+/**
  * @brief Moves the ball around the arena
  * 
  */
@@ -142,19 +209,40 @@ void moveBall(){
     tempBall.yPos += tempBall.ySpeed;
 
     // Check if ball has hit arena roof or floor
-    if(ball.yPos == 1 || ball.yPos == 30){
+    if(tempBall.yPos <= 1 || tempBall.yPos >= 30){
         ball.ySpeed = -ball.ySpeed;
     }
 
-    // Check if 
-    if(ball.xPos == 1 || ball.xPos == 126){
+    // Check if ball has hit left wall (Player 2 scored)
+    if(tempBall.xPos == 0){
+        goal(0,1);
+    }
+
+    // Check if ball has hit right wall (Player 1 scored)
+    if(tempBall.xPos == 127){
+        goal(1, 0);
+    }
+
+    //Check if ball has hit right slider
+    if(samePosition(tempBall, leftSlider) || samePosition(tempBall, rightSlider)){
+        
+
+        // Check where on slider
+        int i;
+        struct sliderElement tempLeft = leftSlider;
+        struct sliderElement tempRight = rightSlider;
+        int lengthslider = 0;
+
+        for(i = tempLeft.yPos; i < tempLeft.yPos + tempLeft.length; i ++){
+
+            /**
+             * @brief Insert code here
+             * 
+             */
+        }
         ball.xSpeed = -ball.xSpeed;
     }
 
-    
-    if(samePosition(tempBall, leftSlider) || samePosition(tempBall, rightSlider)){
-        ball.xSpeed = -ball.xSpeed;
-    }
     drawBall(0);
     // Increment or decrement x and y positions
     ball.xPos += ball.xSpeed;
@@ -180,7 +268,7 @@ void moveSliders(int btns){
 
     // Button 2 was pressed move right slider up
     if(btns & 0b10){
-        if(rightSlider.yPos > 0){
+        if(rightSlider.yPos - 1 > 0){
 
             rightSlider.yPos --;
         }
@@ -196,11 +284,12 @@ void moveSliders(int btns){
 
     // Button 4 was pressed move left slider up
     if(btns & 0b1000){
-        if(leftSlider.yPos > 0){
+        if(leftSlider.yPos - 1 > 0){
 
             leftSlider.yPos --;
         }
     }
+    
     drawSliders(1, 1);
 
 }
@@ -245,28 +334,6 @@ int samePosition(struct ballElement boll, struct sliderElement slider){
     
     return 0;
 }
-/**
- * @brief Increases the score
- * 
- * @param player1 set to 1 if player 1 scored
- * @param player2 set to 1 if player 2 scored
- */
-void increaseScore(int player1, int player2){
-    if(player1){
-        score[0] ++;
-    }else if(player2){
-        score[1] ++;
-    }
-}
-
-void goal(int player1, int player2){
-    // Draw goal
-
-    //Increase score
-    increaseScore(player1, player2);
-}
-
-
 
 /**
  * @brief Does the initial game setup
@@ -288,12 +355,11 @@ void start_game(uint8_t *data){
  * @param data 
  */
 void continueGame(uint8_t *data){
-     int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
-        timerInterrupt >>= 8;
+    int timerInterrupt = IFS(0)&0x100; // Get timer2 interrupt flag
+    timerInterrupt >>= 8;
         
         if(timerInterrupt){
-
-
+        
             moveBall();
             int btns = getButtons();
             moveSliders(btns);
