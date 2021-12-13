@@ -166,16 +166,25 @@ void goal(int player1, int player2){
         timerInterrupt >>= 8;
         if(timerInterrupt){
         
+            // Check if someone has won
+            if(score[0] == 5){
+                display_string(1, "Player 1 won!!");
+            }else if( score[1] == 5){
+                display_string(1, "Player 2 won!!");
+            }else{ // Else display score
+                display_string(1, &scorePlayer1);
+                display_string(2, &scorePlayer2);
+            }
+            display_updateTextBuffer();
+            IFS(0) &= 0xFEFF; // Set the intercept flag to zero
             counter ++;
             if(counter == 20){
                 break;
             }
-            display_string(1, scorePlayer1);
-            display_string(2, scorePlayer2);
-            display_updateTextBuffer();
-            IFS(0) &= 0xFEFF; // Set the intercept flag to zero
         }
     }
+
+    
     // Restart  
     start_game();
 }
