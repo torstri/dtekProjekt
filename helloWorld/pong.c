@@ -1,5 +1,6 @@
 #include <pic32mx.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 
 char score [2]; // Keeps track of score, index 0 = player 1, index 2 = player 2
@@ -59,13 +60,13 @@ void ballInit(){
  */
 void sliderInit(){
 
-    //Start left slider at (10,9)
+    //Start left slider at (10,12)
     leftSlider.xPos = 10;
-    leftSlider.yPos = 9;
+    leftSlider.yPos = 12;
     leftSlider.length = 8;
-    // Start right slider at (120,9)
+    // Start right slider at (120,12)
     rightSlider.xPos = 120;
-    rightSlider.yPos = 9;
+    rightSlider.yPos = 12;
     rightSlider.length = 8;
 }
 
@@ -121,14 +122,14 @@ void drawArena(){
     // Draw floor and roof
     int x;
     for(x = 0; x < 128; x++){
-        set_pixel(x, 0); // Draws roof
-        set_pixel(x,31); // Draws floor
+        set_pixel(x, 0,1); // Draws roof
+        set_pixel(x,31,1); // Draws floor
     }
     //Draw sides
     int y;
     for(y = 0; y < 32; y++){
-        set_pixel(0, y); // Left side
-        set_pixel(127,y); // Right side
+        set_pixel(0, y,1); // Left side
+        set_pixel(127,y,1); // Right side
     }
 }
 
@@ -203,14 +204,15 @@ void goal(int player1, int player2){
 void moveBall(){
 
     // Create temp ball to check next position    
-    struct ballElement tempBall;
+    struct ballElement tempBall, tempBall2;
     tempBall = ball;
+    tempBall2 = ball;
     tempBall.xPos += tempBall.xSpeed;
     tempBall.yPos += tempBall.ySpeed;
 
     // Check if ball has hit arena roof or floor
     if(tempBall.yPos <= 1 || tempBall.yPos >= 30){
-        ball.ySpeed = -ball.ySpeed;
+        tempBall2.ySpeed = -tempBall2.ySpeed;
     }
 
     // Check if ball has hit left wall (Player 2 scored)
@@ -219,31 +221,18 @@ void moveBall(){
     }
 
     // Check if ball has hit right wall (Player 1 scored)
-    if(tempBall.xPos == 127){
+    if(tempBall.xPos + 1 == 127){
         goal(1, 0);
     }
 
     //Check if ball has hit right slider
     if(samePosition(tempBall, leftSlider) || samePosition(tempBall, rightSlider)){
-        
-
-        // Check where on slider
-        int i;
-        struct sliderElement tempLeft = leftSlider;
-        struct sliderElement tempRight = rightSlider;
-        int lengthslider = 0;
-
-        for(i = tempLeft.yPos; i < tempLeft.yPos + tempLeft.length; i ++){
-
-            /**
-             * @brief Insert code here
-             * 
-             */
-        }
-        ball.xSpeed = -ball.xSpeed;
+        tempBall2.xSpeed = -tempBall2.xSpeed;
     }
 
     drawBall(0);
+    ball.xSpeed = tempBall2.xSpeed;
+    ball.ySpeed = tempBall2.ySpeed;
     // Increment or decrement x and y positions
     ball.xPos += ball.xSpeed;
     ball.yPos += ball.ySpeed;
@@ -363,9 +352,8 @@ void continueGame(uint8_t *data){
             moveBall();
             int btns = getButtons();
             moveSliders(btns);
-            drawArena();
             updateDisplay(data);
-
+            drawArena();
             IFS(0) &= 0xFEFF; // Set the intercept flag to zero
         }
 }

@@ -156,10 +156,12 @@ uint8_t screen[512]; // Själva bilden, ett tal är 8-bitar, alltså 8 rader ver
 					 // index 384 - 511 blir [24, 0] - [31, 127]
 
 
-char textbuffer[4][16]; // Egentligen onödig men kan vara najs för att hårdkoda grejer senare
+char textbuffer[4][16]; // Handles text and score for display
 
 
-
+/**
+* Function to set pixels on the display to on or off
+**/
 uint8_t spi_send_recv(uint8_t data) {
 	while(!(SPI2STAT & 0x08));
 	SPI2BUF = data;
@@ -167,6 +169,9 @@ uint8_t spi_send_recv(uint8_t data) {
 	return SPI2BUF;
 }
 
+/**
+* Sets everything in textbuffer to zero
+**/
 void clear_textbuffer(){
 	int i, j;
 	for(i = 0; i < 16; i ++){
@@ -177,7 +182,7 @@ void clear_textbuffer(){
 }
 
 /**
- * @brief 
+ * @brief Sends values from the text buffer to the display 
  * 
  */
 void display_updateTextBuffer() {
@@ -204,23 +209,7 @@ void display_updateTextBuffer() {
 	}
 }
 
-void display_image(int x, const uint8_t *data) {
-	int i, j;
-	
-	for(i = 0; i < 4; i++) {
-		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK; // Command mode
-		spi_send_recv(0x22);
-		spi_send_recv(i);
-		
-		spi_send_recv(x & 0xF);
-		spi_send_recv(0x10 | ((x >> 4) & 0xF));
-		
-		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK;
-		
-		for(j = 0; j < 128; j++)
-			spi_send_recv(~data[i*32 + j]);
-	}
-}
+
 /**
  * @brief Updates the display based on an array containing
  * 512 unsigned 8-bit integers.
@@ -232,11 +221,9 @@ void updateDisplay(const uint8_t *data){
 	spi_send_recv(0x22); // Tell starting and last page
 	spi_send_recv(0); // Starting page
 	spi_send_recv(3); // Ending page
-	spi_send_recv(0x21); // ??
-	spi_send_recv(0x00); // ??
-	spi_send_recv(127); // ??
+	
 	spi_send_recv(0x20); // Horizontal mode
-	spi_send_recv(0x00); // ??
+	spi_send_recv(0x00); // Start position
 
 
 	// Iterate through the data array and turn on pixels
@@ -247,19 +234,16 @@ void updateDisplay(const uint8_t *data){
 	}
 }
 
-
-
-void set_on_all(){
-    int i;
-    for(i = 0; i < 512; i ++){
-        screen[i] = 255;
-    }
-}
-
-
-
+/**
+ * @brief Sets specific pixel on or off
+ * 
+ * @param x - X-coordinate
+ * @param y - Y-coordinate
+ * @param value - On or off (1 or 0)
+ */
 void set_pixel(int x, int y, int value){
 	
+	//Guard clause
 	if(x > 127 || x < 0 || y > 31 || y < 0 ){
 		return;
 	}
@@ -285,7 +269,11 @@ void set_pixel(int x, int y, int value){
 	}
 }
 
-void display_clear(){ // Gör allt svart
+/**
+ * @brief Sets all pixels to off
+ * 
+ */
+void display_clear(){ 
 	int i, j, k;
 	int c;
 	for(i = 0; i < 4; i++) {
@@ -330,7 +318,7 @@ void display_string(int line, char *s) {
 /**
  * @brief Resets all elements in the array
  * 
- * @param data 
+ * 
  */
 void resetDisplay(){
 	int i = 0;

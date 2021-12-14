@@ -1,25 +1,8 @@
 #include <pic32mx.h>
 #include <stdint.h>
 
-#define DISPLAY_VDD PORTFbits.RF6
-#define DISPLAY_VBATT PORTFbits.RF5
-#define DISPLAY_COMMAND_DATA PORTFbits.RF4
-#define DISPLAY_RESET PORTGbits.RG9
 
-#define DISPLAY_VDD_PORT PORTF
-#define DISPLAY_VDD_MASK 0x40
-#define DISPLAY_VBATT_PORT PORTF
-#define DISPLAY_VBATT_MASK 0x20
-#define DISPLAY_COMMAND_DATA_PORT PORTF
-#define DISPLAY_COMMAND_DATA_MASK 0x10
-#define DISPLAY_RESET_PORT PORTG
-#define DISPLAY_RESET_MASK 0x200
-
-void delay(int cyc) {
-	int i;
-	for(i = cyc; i > 0; i--);
-}
-char textbuffer[4][16]; // Egentligen onödig men kan vara najs för att hårdkoda grejer senare
+char textbuffer[4][16]; // Handles text and score for display
 
 uint8_t screen[512]; // Själva bilden, ett tal är 8-bitar, alltså 8 rader vertikalt, sen blir 
 					 // index 0 - 127 
@@ -75,9 +58,6 @@ int main(void) {
 	//Set all pixels to off
 	resetDisplay(screen);
 	//Start the game;
-	// int goalChar = 0x30 + 1;
-	// display_string(3, &goalChar);
-	// display_updateTextBuffer();
 	start_game(screen);
 	while(1){
 		continueGame(screen);

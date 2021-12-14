@@ -17,7 +17,14 @@
 #define DISPLAY_RESET_MASK 0x200
 
 
+void delay(int cyc) {
+	int i;
+	for(i = cyc; i > 0; i--);
+}
 
+/**
+*Initialization sequence to ensure safe use of the display
+**/
 void display_init() {
 	DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
 	delay(10);
