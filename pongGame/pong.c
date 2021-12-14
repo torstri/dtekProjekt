@@ -206,13 +206,13 @@ void moveBall(){
     // Create temp ball to check next position    
     struct ballElement tempBall, tempBall2;
     tempBall = ball;
-    tempBall2 = ball;
+    
     tempBall.xPos += tempBall.xSpeed;
     tempBall.yPos += tempBall.ySpeed;
 
     // Check if ball has hit arena roof or floor
     if(tempBall.yPos <= 1 || tempBall.yPos >= 30){
-        tempBall2.ySpeed = -tempBall2.ySpeed;
+        ball.ySpeed = -ball.ySpeed;
     }
 
     // Check if ball has hit left wall (Player 2 scored)
@@ -227,12 +227,11 @@ void moveBall(){
 
     //Check if ball has hit right slider
     if(samePosition(tempBall, leftSlider) || samePosition(tempBall, rightSlider)){
-        tempBall2.xSpeed = -tempBall2.xSpeed;
+        ball.xSpeed = -ball.xSpeed;
     }
 
     drawBall(0);
-    ball.xSpeed = tempBall2.xSpeed;
-    ball.ySpeed = tempBall2.ySpeed;
+    
     // Increment or decrement x and y positions
     ball.xPos += ball.xSpeed;
     ball.yPos += ball.ySpeed;
